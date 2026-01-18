@@ -1,7 +1,7 @@
 "use client";
 import { getBrowserInfo, getIPAddress, getUserDetails } from "@/lib/helper";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useTransition } from "react";
 
 export type ReverseGeocodeData = {
   name: string;
@@ -31,20 +31,23 @@ let hasDetected = false;
 export function LocaleDetector() {
   const router = useRouter();
   const params = useParams();
-
+  const [isPending, startTransition] = useTransition();
   async function saveUserDetails(details: ReverseGeocodeData) {
-    try {
-      await fetch("/api/user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      });
-      console.log("User details saved successfully");
-    } catch (error) {
-      console.error("Error saving user details:", error);
-    }
+    startTransition(async () => {
+      try {
+        await fetch("/api/user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(details),
+        });
+        router.refresh();
+        console.log("User details saved successfully");
+      } catch (error) {
+        console.error("Error saving user details:", error);
+      }
+    });
   }
 
   useEffect(() => {

@@ -1,4 +1,5 @@
 import CardItem from "@/components/CardItem";
+import DeleteUser from "@/components/DeleteUser";
 import prisma from "@/lib/prisma";
 
 // Make this page dynamic
@@ -11,10 +12,10 @@ export default async function Page() {
     },
   });
   return (
-    <div className="min-h-screen flex flex-col max-w-7xl mx-auto w-full ">
+    <div className="min-h-screen flex flex-col max-w-7xl mx-auto w-full px-4">
       <h1 className="text-4xl font-bold mb-8 mt-16">Users</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {users.length === 0 && <li className="mb-2">No users found</li>}
+        {users.length === 0 && <div className="mb-2">No users found</div>}
         {users.map((user) => (
           // create user card
           <div
@@ -22,19 +23,21 @@ export default async function Page() {
             className="mb-4 p-4 border border-gray-300 rounded-md space-y-4"
           >
             {/* Header Section: Name and Email */}
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex justify-between items-start mb-6 flex-wrap">
               <div>
                 <h3 className="text-xl font-semibold tracking-tight">
                   {user.name}
                 </h3>
+
                 <p className="text-sm text-blue-600 font-medium">
                   {user.email}
                 </p>
               </div>
-              <div className="text-right">
+              <div className="text-right flex items-center gap-2">
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                   {user.city || "Unknown Location"}
                 </span>
+                <DeleteUser userId={user.id} />
               </div>
             </div>
 
